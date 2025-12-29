@@ -11,9 +11,9 @@ import concurrent.futures
 from flask import Flask, render_template, jsonify, request, Response, send_file
 from flask_cors import CORS
 import requests
-from paper_database_v2 import (
+from paper_database_v3 import (
     get_all_papers, get_paper_by_id, filter_papers,
-    get_filter_options, SUBJECTS, YEARS, PAPER_TYPES, get_paper_count
+    get_filter_options, SUBJECTS, YEARS, PAPER_TYPES, get_paper_count, get_stats
 )
 
 app = Flask(__name__)
@@ -38,6 +38,18 @@ HEADERS_CBSE = {
     'Referer': 'https://cbse.gov.in/',
 }
 
+HEADERS_AGLASEM = {
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+    'Accept': 'application/pdf,*/*',
+    'Referer': 'https://schools.aglasem.com/',
+}
+
+HEADERS_EXAMFEAR = {
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+    'Accept': 'application/pdf,*/*',
+    'Referer': 'https://www.examfear.com/',
+}
+
 # Cache for successful URLs
 url_cache = {}
 
@@ -48,6 +60,10 @@ def get_headers_for_mirror(mirror_name):
         return HEADERS_SUPERCOP
     elif 'selfstudy' in mirror_name:
         return HEADERS_SELFSTUDY
+    elif 'aglasem' in mirror_name:
+        return HEADERS_AGLASEM
+    elif 'examfear' in mirror_name:
+        return HEADERS_EXAMFEAR
     else:
         return HEADERS_CBSE
 
@@ -203,8 +219,12 @@ def api_filters():
 @app.route('/api/stats')
 def api_stats():
     """Get database statistics"""
+    stats = get_stats()
     return jsonify({
-        'total_papers': get_paper_count(),
+        'total_papers': stats['total'],
+        'by_subject': stats['by_subject'],
+        'by_year': stats['by_year'],
+        'by_type': stats['by_type'],
         'subjects': SUBJECTS,
         'years': YEARS,
         'types': PAPER_TYPES

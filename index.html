@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CBSE Previous Year Papers (2015-2025)</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+        header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+        header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+        .stats-bar {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+        .stat-item {
+            background: rgba(255,255,255,0.2);
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+        }
+        .main-card {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+        .filters-section {
+            background: #f8f9fa;
+            padding: 25px;
+            border-bottom: 1px solid #e9ecef;
+        }
+        .filters-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        .filter-group label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #495057;
+            margin-bottom: 6px;
+        }
+        .filter-group select, .filter-group input {
+            width: 100%;
+            padding: 10px 12px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            transition: border-color 0.2s;
+        }
+        .filter-group select:focus, .filter-group input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        .filter-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(102,126,234,0.4); }
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+        .btn-secondary:hover { background: #5a6268; }
+        .btn-success {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            color: white;
+        }
+        .btn-success:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(17,153,142,0.4); }
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+        }
+        .btn-danger:hover { background: #c82333; }
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+        .selection-bar {
+            background: #e3f2fd;
+            padding: 15px 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            border-bottom: 1px solid #bbdefb;
+        }
+        .selection-info {
+            font-weight: 600;
+            color: #1565c0;
+        }
+        .selection-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .papers-section {
+            padding: 0;
+        }
+        .papers-header {
+            padding: 20px 25px;
+            background: #fff;
+            border-bottom: 1px solid #e9ecef;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .papers-count {
+            font-size: 1.1rem;
+            color: #495057;
+        }
+        .papers-count strong {
+            color: #667eea;
+        }
+        .papers-list {
+            max-height: 600px;
+            overflow-y: auto;
+        }
+        .paper-item {
+            display: flex;
+            align-items: center;
+            padding: 15px 25px;
+            border-bottom: 1px solid #f1f3f4;
+            transition: background 0.2s;
+        }
+        .paper-item:hover {
+            background: #f8f9fa;
+        }
+        .paper-item.selected {
+            background: #e3f2fd;
+        }
+        .paper-checkbox {
+            width: 20px;
+            height: 20px;
+            margin-right: 15px;
+            cursor: pointer;
+            accent-color: #667eea;
+        }
+        .paper-info {
+            flex: 1;
+            min-width: 0;
+        }
+        .paper-title {
+            font-weight: 600;
+            color: #212529;
+            margin-bottom: 4px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .paper-meta {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            font-size: 0.85rem;
+            color: #6c757d;
+        }
+        .paper-meta span {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .badge {
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        .badge-qp { background: #d4edda; color: #155724; }
+        .badge-ms { background: #cce5ff; color: #004085; }
+        .badge-sp { background: #fff3cd; color: #856404; }
+        .badge-comp { background: #f8d7da; color: #721c24; }
+        .paper-actions {
+            display: flex;
+            gap: 8px;
+        }
+        .btn-sm {
+            padding: 6px 12px;
+            font-size: 0.85rem;
+        }
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-top: 1px solid #e9ecef;
+        }
+        .pagination button {
+            padding: 8px 16px;
+        }
+        .page-info {
+            color: #6c757d;
+            font-size: 0.9rem;
+        }
+        .loading {
+            text-align: center;
+            padding: 60px 20px;
+            color: #6c757d;
+        }
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid #e9ecef;
+            border-top-color: #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        .no-results {
+            text-align: center;
+            padding: 60px 20px;
+            color: #6c757d;
+        }
+        .no-results h3 {
+            margin-bottom: 10px;
+            color: #495057;
+        }
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #323232;
+            color: white;
+            padding: 15px 25px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            z-index: 1000;
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.3s;
+        }
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        .toast.success { background: #28a745; }
+        .toast.error { background: #dc3545; }
+        @media (max-width: 768px) {
+            header h1 { font-size: 1.8rem; }
+            .filters-grid { grid-template-columns: 1fr 1fr; }
+            .paper-item { flex-wrap: wrap; }
+            .paper-actions { width: 100%; margin-top: 10px; justify-content: flex-end; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📚 CBSE Previous Year Papers</h1>
+            <p>Download Question Papers, Marking Schemes, Sample Papers & Compartment Papers (2015-2025)</p>
+            <div class="stats-bar">
+                <span class="stat-item" id="total-papers">Loading...</span>
+                <span class="stat-item" id="total-subjects">6 Subjects</span>
+                <span class="stat-item">11 Years (2015-2025)</span>
+                <span class="stat-item" id="total-mirrors">Multiple Mirror Sites</span>
+            </div>
+        </header>
+
+        <div class="main-card">
+            <div class="filters-section">
+                <div class="filters-grid">
+                    <div class="filter-group">
+                        <label>Year</label>
+                        <select id="filter-year">
+                            <option value="">All Years</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label>Subject</label>
+                        <select id="filter-subject">
+                            <option value="">All Subjects</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label>Paper Type</label>
+                        <select id="filter-type">
+                            <option value="">All Types</option>
+                            <option value="question_paper">Question Paper</option>
+                            <option value="marking_scheme">Marking Scheme</option>
+                            <option value="sample_paper">Sample Paper</option>
+                            <option value="compartment">Compartment</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label>Region</label>
+                        <select id="filter-region">
+                            <option value="">All Regions</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label>Search</label>
+                        <input type="text" id="filter-search" placeholder="Search papers...">
+                    </div>
+                </div>
+                <div class="filter-actions">
+                    <button class="btn btn-primary" onclick="applyFilters()">🔍 Apply Filters</button>
+                    <button class="btn btn-secondary" onclick="clearFilters()">✖ Clear</button>
+                </div>
+            </div>
+
+            <div class="selection-bar" id="selection-bar" style="display: none;">
+                <span class="selection-info"><span id="selected-count">0</span> papers selected</span>
+                <div class="selection-actions">
+                    <button class="btn btn-success btn-sm" onclick="downloadSelected()">📥 Download Selected as ZIP</button>
+                    <button class="btn btn-danger btn-sm" onclick="clearSelection()">✖ Clear Selection</button>
+                </div>
+            </div>
+
+            <div class="papers-section">
+                <div class="papers-header">
+                    <span class="papers-count">Showing <strong id="showing-count">0</strong> of <strong id="total-count">0</strong> papers</span>
+                    <div>
+                        <button class="btn btn-secondary btn-sm" onclick="selectAllFiltered()">☑ Select All Filtered</button>
+                        <button class="btn btn-success btn-sm" onclick="downloadAllFiltered()">📦 Download All Filtered</button>
+                    </div>
+                </div>
+                <div class="papers-list" id="papers-list">
+                    <div class="loading">
+                        <div class="loading-spinner"></div>
+                        <p>Loading papers...</p>
+                    </div>
+                </div>
+                <div class="pagination" id="pagination" style="display: none;">
+                    <button class="btn btn-secondary btn-sm" onclick="prevPage()" id="prev-btn">← Previous</button>
+                    <span class="page-info">Page <span id="current-page">1</span> of <span id="total-pages">1</span></span>
+                    <button class="btn btn-secondary btn-sm" onclick="nextPage()" id="next-btn">Next →</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <script>
+        let currentPage = 1;
+        let totalPages = 1;
+        let totalPapers = 0;
+        let selectedPapers = new Set();
+        let currentPapers = [];
+        let filters = {};
+
+        async function init() {
+            await loadFilters();
+            await loadPapers();
+            await loadStats();
+        }
+
+        async function loadStats() {
+            try {
+                const res = await fetch('/api/stats');
+                const data = await res.json();
+                document.getElementById('total-papers').textContent = `${data.total_papers.toLocaleString()} Papers`;
+                
+                // Show subject breakdown in tooltip/title
+                const subjectCount = Object.keys(data.by_subject || {}).length;
+                document.getElementById('total-subjects').textContent = `${subjectCount} Subjects`;
+                
+                // Calculate total mirror availability
+                document.getElementById('total-mirrors').textContent = `Multiple Mirror Fallbacks`;
+            } catch (e) {
+                console.error('Failed to load stats:', e);
+                document.getElementById('total-papers').textContent = 'Error loading stats';
+            }
+        }
+
+        async function loadFilters() {
+            try {
+                const res = await fetch('/api/filters');
+                const data = await res.json();
+                
+                const yearSelect = document.getElementById('filter-year');
+                data.years.forEach(year => {
+                    yearSelect.innerHTML += `<option value="${year}">${year}</option>`;
+                });
+
+                const subjectSelect = document.getElementById('filter-subject');
+                data.subjects.forEach(subject => {
+                    subjectSelect.innerHTML += `<option value="${subject}">${subject}</option>`;
+                });
+
+                const regionSelect = document.getElementById('filter-region');
+                data.regions.forEach(region => {
+                    regionSelect.innerHTML += `<option value="${region}">${region}</option>`;
+                });
+            } catch (e) {
+                console.error('Failed to load filters:', e);
+            }
+        }
+
+        async function loadPapers() {
+            const list = document.getElementById('papers-list');
+            list.innerHTML = '<div class="loading"><div class="loading-spinner"></div><p>Loading papers...</p></div>';
+
+            const params = new URLSearchParams();
+            params.append('page', currentPage);
+            params.append('per_page', 50);
+            
+            if (filters.year) params.append('year', filters.year);
+            if (filters.subject) params.append('subject', filters.subject);
+            if (filters.type) params.append('type', filters.type);
+            if (filters.region) params.append('region', filters.region);
+            if (filters.search) params.append('search', filters.search);
+
+            try {
+                const res = await fetch(`/api/papers?${params}`);
+                const data = await res.json();
+                
+                currentPapers = data.papers;
+                totalPapers = data.total;
+                totalPages = data.total_pages;
+                
+                renderPapers(data.papers);
+                updatePagination();
+                updateCounts(data.papers.length, data.total);
+            } catch (e) {
+                list.innerHTML = '<div class="no-results"><h3>Error loading papers</h3><p>Please try again later.</p></div>';
+                console.error('Failed to load papers:', e);
+            }
+        }
+
+        function renderPapers(papers) {
+            const list = document.getElementById('papers-list');
+            
+            if (papers.length === 0) {
+                list.innerHTML = '<div class="no-results"><h3>No papers found</h3><p>Try adjusting your filters.</p></div>';
+                return;
+            }
+
+            list.innerHTML = papers.map(paper => `
+                <div class="paper-item ${selectedPapers.has(paper.id) ? 'selected' : ''}" data-id="${paper.id}">
+                    <input type="checkbox" class="paper-checkbox" 
+                           ${selectedPapers.has(paper.id) ? 'checked' : ''} 
+                           onchange="togglePaper(${paper.id})">
+                    <div class="paper-info">
+                        <div class="paper-title">${paper.display_name}</div>
+                        <div class="paper-meta">
+                            <span>📅 ${paper.year}</span>
+                            <span>📖 ${paper.subject}</span>
+                            <span>🌍 ${paper.region}</span>
+                            <span class="badge ${getBadgeClass(paper.type)}">${formatType(paper.type)}</span>
+                        </div>
+                    </div>
+                    <div class="paper-actions">
+                        <button class="btn btn-primary btn-sm" onclick="downloadPaper(${paper.id})">📥 Download</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function getBadgeClass(type) {
+            const classes = {
+                'question_paper': 'badge-qp',
+                'marking_scheme': 'badge-ms',
+                'sample_paper': 'badge-sp',
+                'compartment': 'badge-comp'
+            };
+            return classes[type] || 'badge-qp';
+        }
+
+        function formatType(type) {
+            const names = {
+                'question_paper': 'QP',
+                'marking_scheme': 'MS',
+                'sample_paper': 'Sample',
+                'compartment': 'Comp'
+            };
+            return names[type] || type;
+        }
+
+        function togglePaper(id) {
+            if (selectedPapers.has(id)) {
+                selectedPapers.delete(id);
+            } else {
+                selectedPapers.add(id);
+            }
+            updateSelectionBar();
+            
+            const item = document.querySelector(`.paper-item[data-id="${id}"]`);
+            if (item) {
+                item.classList.toggle('selected', selectedPapers.has(id));
+            }
+        }
+
+        function updateSelectionBar() {
+            const bar = document.getElementById('selection-bar');
+            const count = document.getElementById('selected-count');
+            
+            if (selectedPapers.size > 0) {
+                bar.style.display = 'flex';
+                count.textContent = selectedPapers.size;
+            } else {
+                bar.style.display = 'none';
+            }
+        }
+
+        function selectAllFiltered() {
+            currentPapers.forEach(paper => {
+                selectedPapers.add(paper.id);
+            });
+            renderPapers(currentPapers);
+            updateSelectionBar();
+            showToast(`Selected ${currentPapers.length} papers`, 'success');
+        }
+
+        function clearSelection() {
+            selectedPapers.clear();
+            renderPapers(currentPapers);
+            updateSelectionBar();
+        }
+
+        async function downloadPaper(id) {
+            showToast('Starting download...', 'success');
+            window.location.href = `/api/download/${id}`;
+        }
+
+        async function downloadSelected() {
+            if (selectedPapers.size === 0) {
+                showToast('No papers selected', 'error');
+                return;
+            }
+
+            if (selectedPapers.size > 100) {
+                showToast('Maximum 100 papers per download', 'error');
+                return;
+            }
+
+            showToast(`Preparing ${selectedPapers.size} papers for download...`, 'success');
+
+            try {
+                const res = await fetch('/api/download-zip', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ paper_ids: Array.from(selectedPapers) })
+                });
+
+                if (res.ok) {
+                    const blob = await res.blob();
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = 'CBSE_Papers.zip';
+                    a.click();
+                    window.URL.revokeObjectURL(url);
+                    showToast('Download started!', 'success');
+                } else {
+                    const data = await res.json();
+                    showToast(data.error || 'Download failed', 'error');
+                }
+            } catch (e) {
+                showToast('Download failed', 'error');
+                console.error(e);
+            }
+        }
+
+        async function downloadAllFiltered() {
+            if (totalPapers === 0) {
+                showToast('No papers to download', 'error');
+                return;
+            }
+
+            if (totalPapers > 100) {
+                showToast(`Too many papers (${totalPapers}). Please narrow filters. Max 100.`, 'error');
+                return;
+            }
+
+            showToast(`Preparing ${totalPapers} papers for download...`, 'success');
+
+            try {
+                const res = await fetch('/api/download-filtered', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(filters)
+                });
+
+                if (res.ok) {
+                    const blob = await res.blob();
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = 'CBSE_Papers_Filtered.zip';
+                    a.click();
+                    window.URL.revokeObjectURL(url);
+                    showToast('Download started!', 'success');
+                } else {
+                    const data = await res.json();
+                    showToast(data.error || 'Download failed', 'error');
+                }
+            } catch (e) {
+                showToast('Download failed', 'error');
+                console.error(e);
+            }
+        }
+
+        function applyFilters() {
+            filters = {
+                year: document.getElementById('filter-year').value,
+                subject: document.getElementById('filter-subject').value,
+                type: document.getElementById('filter-type').value,
+                region: document.getElementById('filter-region').value,
+                search: document.getElementById('filter-search').value
+            };
+            currentPage = 1;
+            loadPapers();
+        }
+
+        function clearFilters() {
+            document.getElementById('filter-year').value = '';
+            document.getElementById('filter-subject').value = '';
+            document.getElementById('filter-type').value = '';
+            document.getElementById('filter-region').value = '';
+            document.getElementById('filter-search').value = '';
+            filters = {};
+            currentPage = 1;
+            loadPapers();
+        }
+
+        function updatePagination() {
+            const pagination = document.getElementById('pagination');
+            pagination.style.display = totalPages > 1 ? 'flex' : 'none';
+            
+            document.getElementById('current-page').textContent = currentPage;
+            document.getElementById('total-pages').textContent = totalPages;
+            document.getElementById('prev-btn').disabled = currentPage <= 1;
+            document.getElementById('next-btn').disabled = currentPage >= totalPages;
+        }
+
+        function updateCounts(showing, total) {
+            document.getElementById('showing-count').textContent = showing;
+            document.getElementById('total-count').textContent = total;
+        }
+
+        function prevPage() {
+            if (currentPage > 1) {
+                currentPage--;
+                loadPapers();
+            }
+        }
+
+        function nextPage() {
+            if (currentPage < totalPages) {
+                currentPage++;
+                loadPapers();
+            }
+        }
+
+        function showToast(message, type = '') {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.className = 'toast ' + type;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 3000);
+        }
+
+        // Enter key to search
+        document.getElementById('filter-search').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') applyFilters();
+        });
+
+        // Initialize
+        init();
+    </script>
+</body>
+</html>
